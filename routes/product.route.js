@@ -1,13 +1,22 @@
 const express = require('express');
 const router = express.Router();
 
-// Require the controllers WHICH WE DID NOT CREATE YET!!
-const product_controller = require('../controllers/product.controller');
+const ProductController = require('../controllers/product.controller');
+const Product = new ProductController
 
-// a simple test url to check that all of our files are communicating correctly.
-router.get('/test', product_controller.test);
 
-router.post('/create', product_controller.product_create);
-router.get('/list', product_controller.product_list);
-router.get('/:id', product_controller.product_details);
+router.get('/', Product.list);
+router.post('/', Product.create);
+router.get('/:id', Product.details);
+// router.put('/:id', Product.update);
+// router.delete('/:id', Product.delete);
+
+router.get('/*', (req, res, next) => {
+  res.status(404).send({
+    code: 404,
+    error: 'NOT FOUND',
+    message: `Endpoint ${req.url} not found.`
+  });
+});
+
 module.exports = router;

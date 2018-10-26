@@ -12,7 +12,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
 }));
+
 app.use('/products', product);
+
+app.use((req, res, next) => {
+  res.status(404).send({
+    code: 404,
+    error: 'NOT FOUND',
+    message: `Endpoint ${req.url} not found.`
+  });
+});
 
 let port = 1234;
 
