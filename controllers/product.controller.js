@@ -1,5 +1,7 @@
 const Product = require('../models/product.model');
 const HTTP = require('../lib/http_errors');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Schema.Types.ObjectId;
 class ProductController {
   list(req, res) {
     try {
@@ -71,25 +73,23 @@ class ProductController {
           message: 'missing id parameter'
         })
 
-      if (!Product.Types.ObjectId.isValid(req.params.id))
-        throw ({
-          code: 404,
-          status: 'NOT FOUND',
-          message: 'missing id parameter'
-        })
+      Product.findById(req.params.id, function (err, product) {
+        console.log(err, product);
 
-      console.log(Product.Types.ObjectId.isValid(req.params.id));
+        if (err || product == null)
+          throw ({
+            code: 404,
+            status: 'NOT FOUND',
+            message: 'invalid ID'
+          })
 
-      // Product.findById(req.params.id, function (err, product) {
-      //   if (err)
-      //     throw ('error reading product')
-
-      //   res.send(product);
-      // })
+        res.send(product);
+      })
 
     } catch (e) {
 
       console.log(e)
+      res.end()
       // res.status(e.code).send({
       //   code: e.code,
       //   error: e.status,
